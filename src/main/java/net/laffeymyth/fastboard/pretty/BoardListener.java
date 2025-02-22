@@ -1,44 +1,26 @@
 package net.laffeymyth.fastboard.pretty;
 
-import fr.mrmicky.fastboard.adventure.FastBoard;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Map;
+import java.util.Optional;
 
 class BoardListener implements Listener {
-    private final Map<Player, FastBoard> playerScoreboards;
-    private final Map<Player, BukkitTask> updaterTaskMap;
-    private final Map<Player, BukkitTask> animationTaskMap;
+    private final Map<Player, BoardImpl> playerBoards;
 
-    public BoardListener(Map<Player, FastBoard> playerScoreboards, Map<Player, BukkitTask> updaterTaskMap, Map<Player, BukkitTask> animationTaskMap) {
-        this.playerScoreboards = playerScoreboards;
-        this.updaterTaskMap = updaterTaskMap;
-        this.animationTaskMap = animationTaskMap;
+    public BoardListener(Map<Player, BoardImpl> playerBoards) {
+        this.playerBoards = playerBoards;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     private void onQuit(PlayerQuitEvent event) {
-        BukkitTask bukkitTask = updaterTaskMap.remove(event.getPlayer());
+        Player player = event.getPlayer();
 
-        if (!bukkitTask.isCancelled()) {
-            bukkitTask.cancel();
-        }
-
-        bukkitTask = animationTaskMap.remove(event.getPlayer());
-
-        if (!bukkitTask.isCancelled()) {
-            bukkitTask.cancel();
-        }
-
-        FastBoard fastBoard = playerScoreboards.remove(event.getPlayer());
-
-        if (fastBoard != null) {
-            fastBoard.delete();
-        }
+        Optional.ofNullable(playerBoards.remove(player))
+                .ifPresent(board -> board.remove(player));
     }
 }

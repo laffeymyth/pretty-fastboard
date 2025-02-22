@@ -18,7 +18,8 @@ import java.util.*;
 class BoardImpl implements Board {
     private static final BukkitScheduler SCHEDULER = Bukkit.getScheduler();
     private final Map<Integer, Component> lineMap = new TreeMap<>(Comparator.reverseOrder());
-    private final Map<Player, FastBoard> playerScoreboards;
+    private final Map<Player, BoardImpl> playerBoards;
+    private final Map<Player, FastBoard> playerFastBoards;
     private final Map<Player, BoardDisplayAnimation> playerAnimation;
     private final Map<Player, BukkitTask> updaterTaskMap;
     private final Map<Player, BukkitTask> animationTaskMap;
@@ -29,8 +30,9 @@ class BoardImpl implements Board {
     private BoardDisplayAnimation animation;
     private Component title;
 
-    public BoardImpl(Map<Player, FastBoard> playerScoreboards, Map<Player, BoardDisplayAnimation> playerAnimation, Map<Player, BukkitTask> updaterTaskMap, Map<Player, BukkitTask> animationTaskMap, Plugin plugin, long delay, long period, BoardUpdater updater, BoardDisplayAnimation animation) {
-        this.playerScoreboards = playerScoreboards;
+    public BoardImpl(Map<Player, BoardImpl> playerBoards, Map<Player, FastBoard> playerFastBoards, Map<Player, BoardDisplayAnimation> playerAnimation, Map<Player, BukkitTask> updaterTaskMap, Map<Player, BukkitTask> animationTaskMap, Plugin plugin, long delay, long period, BoardUpdater updater, BoardDisplayAnimation animation) {
+        this.playerBoards = playerBoards;
+        this.playerFastBoards = playerFastBoards;
         this.playerAnimation = playerAnimation;
         this.updaterTaskMap = updaterTaskMap;
         this.animationTaskMap = animationTaskMap;
@@ -43,15 +45,19 @@ class BoardImpl implements Board {
 
     @Override
     public void remove(Player player) {
-        Optional.ofNullable(playerScoreboards.remove(player))
-                .ifPresent(FastBoard::delete);
-
         Optional.ofNullable(updaterTaskMap.remove(player))
                 .filter(task -> !task.isCancelled())
                 .ifPresent(BukkitTask::cancel);
 
-        Optional.ofNullable(playerAnimation.remove(player))
-                .ifPresent(animation -> playerAnimation.remove(player));
+        Optional.ofNullable(animationTaskMap.remove(player))
+                .filter(task -> !task.isCancelled())
+                .ifPresent(BukkitTask::cancel);
+
+        Optional.ofNullable(playerFastBoards.remove(player))
+                .ifPresent(FastBoard::delete);
+
+        playerAnimation.remove(player);
+        playerBoards.remove(player);
     }
 
     @Override
@@ -66,16 +72,17 @@ class BoardImpl implements Board {
 
         remove(player);
 
-        FastBoard board = playerScoreboards.computeIfAbsent(player, FastBoard::new);
+        FastBoard board = playerFastBoards.computeIfAbsent(player, FastBoard::new);
 
+        playerBoards.put(player, this);
         updaterTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> update(player, board), delay, period));
-        animationTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> updateAnimation(player, board), animation.delay(), animation.period()));
+        animationTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> updateAnimation(player, board), animation.getDelay(), animation.getPeriod()));
     }
 
     private void updateAnimation(Player player, FastBoard fastBoard) {
         if (animation != null) {
             fastBoard.updateTitle(animation.getCurrentDisplay(player));
-            animation.nextDisplay(player);
+            animation.getNextDisplay(player);
         }
     }
 
