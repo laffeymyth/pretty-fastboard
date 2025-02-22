@@ -1,6 +1,8 @@
 # Pretty FastBoard
 
-Pretty FastBoard is a powerful and flexible library for creating and managing scoreboards in Minecraft using the Bukkit/Spigot API. This library provides an easy-to-use interface for creating dynamic and animated scoreboards, making it perfect for server developers who want to enhance the player experience with real-time information displays.
+Pretty FastBoard is an add-on to the popular fastboard library: https://github.com/MrMicky-FR/FastBoard
+
+This library allows you to create dynamic scoreboards very quickly.
 
 ## Features
 
@@ -31,6 +33,44 @@ Then, add the dependency:
     <artifactId>pretty-fastboard</artifactId>
     <version>1.2.1-SNAPSHOT</version>
 </dependency>
+```
+
+### Gradle (Groovy)
+
+Add the following repository to your `build.gradle`:
+
+```groovy
+repositories {
+    maven {
+        url 'https://repo.javaplugg.net'
+    }
+}
+```
+
+Then, add the dependency:
+
+```groovy
+dependencies {
+    implementation 'net.laffeymyth:pretty-fastboard:1.2.1-SNAPSHOT'
+}
+```
+
+### Gradle (Kotlin)
+
+Add the following repository to your `build.gradle.kts`:
+
+```kotlin
+repositories {
+    maven("https://repo.javaplugg.net")
+}
+```
+
+Then, add the dependency:
+
+```kotlin
+dependencies {
+    implementation("net.laffeymyth:pretty-fastboard:1.2.1-SNAPSHOT")
+}
 ```
 
 ## Usage
