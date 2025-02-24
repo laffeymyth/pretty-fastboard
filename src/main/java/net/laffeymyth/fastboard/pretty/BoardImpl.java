@@ -93,7 +93,12 @@ class BoardImpl implements Board {
 
         if (delay >= 0 && period >= 0) {
             updaterTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> update(player), delay, period));
-            animationTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> titleAnimationNext(player), animation.getDelay(), animation.getPeriod()));
+        }
+
+        if (animation != null) {
+            if (animation.getDelay() >= 0 && animation.getPeriod() >= 0) {
+                animationTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> titleAnimationNext(player), animation.getDelay(), animation.getPeriod()));
+            }
         }
     }
 
