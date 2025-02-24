@@ -12,13 +12,15 @@ This library allows you to create dynamic scoreboards very quickly.
 
 ## Installation
 
-To use Pretty FastBoard in your project, you need to add the repository and dependency to your `pom.xml` file if you are using Maven.
+To use Pretty FastBoard in your project, you need to add the repository and dependency to your `pom.xml` file if you are
+using Maven.
 
 ### Maven
 
 Add the following repository to your `pom.xml`:
 
 ```xml
+
 <repository>
     <id>javaplugg</id>
     <url>https://repo.javaplugg.net</url>
@@ -28,10 +30,11 @@ Add the following repository to your `pom.xml`:
 Then, add the dependency:
 
 ```xml
+
 <dependency>
     <groupId>net.laffeymyth</groupId>
     <artifactId>pretty-fastboard</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.3.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -51,7 +54,7 @@ Then, add the dependency:
 
 ```groovy
 dependencies {
-    implementation 'net.laffeymyth:pretty-fastboard:1.2.1-SNAPSHOT'
+    implementation 'net.laffeymyth:pretty-fastboard:1.3.1-SNAPSHOT'
 }
 ```
 
@@ -69,7 +72,7 @@ Then, add the dependency:
 
 ```kotlin
 dependencies {
-    implementation("net.laffeymyth:pretty-fastboard:1.2.1-SNAPSHOT")
+    implementation("net.laffeymyth:pretty-fastboard:1.3.1-SNAPSHOT")
 }
 ```
 
@@ -166,4 +169,5 @@ public class BoardListener implements Listener {
 
 ## Contributing
 
-Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
+Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a
+pull request.

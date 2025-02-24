@@ -31,6 +31,23 @@ public interface BoardService {
     Board createBoard(BoardUpdater updater, long delay, long period, BoardDisplayAnimation animation);
 
     /**
+     * Creates a new scoreboard with the specified updater.
+     *
+     * @param updater the updater for the board
+     * @return the created board
+     */
+    Board createBoard(BoardUpdater updater);
+
+    /**
+     * Creates a new scoreboard with the specified updater and animation.
+     *
+     * @param updater   the updater for the board
+     * @param animation the animation for the board
+     * @return the created board
+     */
+    Board createBoard(BoardUpdater updater, BoardDisplayAnimation animation);
+
+    /**
      * Registers the board service.
      */
     void register();

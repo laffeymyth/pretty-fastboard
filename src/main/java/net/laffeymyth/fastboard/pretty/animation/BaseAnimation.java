@@ -41,7 +41,7 @@ public abstract class BaseAnimation implements BoardDisplayAnimation {
      * @param player the player to advance the display for
      */
     @Override
-    public void getNextDisplay(Player player) {
+    public void nextDisplay(Player player) {
         Integer index = currentDisplayMap.getOrDefault(player, 0);
         currentDisplayMap.put(player, (index + 1) % displays.size());
     }

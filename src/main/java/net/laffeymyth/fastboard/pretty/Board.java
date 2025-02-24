@@ -74,4 +74,18 @@ public interface Board {
      * @param player the player to remove the board from
      */
     void remove(Player player);
+
+    /**
+     * Advances the title animation to the next display for the specified player.
+     *
+     * @param player the player to advance the title animation for
+     */
+    void titleAnimationNext(Player player);
+
+    /**
+     * Updates the board for the specified player.
+     *
+     * @param player the player to update the board for
+     */
+    void update(Player player);
 }

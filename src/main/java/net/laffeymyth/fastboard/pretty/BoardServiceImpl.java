@@ -9,7 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 class BoardServiceImpl implements BoardService {
     private final Map<Player, BoardImpl> playerBoards = new HashMap<>();
@@ -32,6 +33,16 @@ class BoardServiceImpl implements BoardService {
     @Override
     public Board createBoard(BoardUpdater updater, long delay, long period, BoardDisplayAnimation animation) {
         return new BoardImpl(playerBoards, playerFastBoards, playerAnimation, updaterTaskMap, animationTaskMap, plugin, delay, period, updater, animation);
+    }
+
+    @Override
+    public Board createBoard(BoardUpdater updater) {
+        return new BoardImpl(playerBoards, playerFastBoards, playerAnimation, updaterTaskMap, animationTaskMap, plugin, updater, null);
+    }
+
+    @Override
+    public Board createBoard(BoardUpdater updater, BoardDisplayAnimation animation) {
+        return new BoardImpl(playerBoards, playerFastBoards, playerAnimation, updaterTaskMap, animationTaskMap, plugin, updater, animation);
     }
 
     public void register() {
@@ -59,6 +70,7 @@ class BoardServiceImpl implements BoardService {
         });
 
         playerFastBoards.clear();
+        playerBoards.clear();
         updaterTaskMap.clear();
         animationTaskMap.clear();
         playerAnimation.clear();

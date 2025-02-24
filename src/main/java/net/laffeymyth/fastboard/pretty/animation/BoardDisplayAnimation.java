@@ -22,7 +22,7 @@ public interface BoardDisplayAnimation {
      *
      * @param player the player to advance the display for
      */
-    void getNextDisplay(Player player);
+    void nextDisplay(Player player);
 
     /**
      * Gets the period of the animation.

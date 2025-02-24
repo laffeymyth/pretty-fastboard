@@ -11,7 +11,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 
 @Getter
 @Setter
@@ -39,6 +42,19 @@ class BoardImpl implements Board {
         this.plugin = plugin;
         this.delay = delay;
         this.period = period;
+        this.updater = updater;
+        this.animation = animation;
+    }
+
+    public BoardImpl(Map<Player, BoardImpl> playerBoards, Map<Player, FastBoard> playerFastBoards, Map<Player, BoardDisplayAnimation> playerAnimation, Map<Player, BukkitTask> updaterTaskMap, Map<Player, BukkitTask> animationTaskMap, Plugin plugin, BoardUpdater updater, BoardDisplayAnimation animation) {
+        this.playerBoards = playerBoards;
+        this.playerFastBoards = playerFastBoards;
+        this.playerAnimation = playerAnimation;
+        this.updaterTaskMap = updaterTaskMap;
+        this.animationTaskMap = animationTaskMap;
+        this.plugin = plugin;
+        this.delay = -1L;
+        this.period = -1L;
         this.updater = updater;
         this.animation = animation;
     }
@@ -72,22 +88,50 @@ class BoardImpl implements Board {
 
         remove(player);
 
-        FastBoard board = playerFastBoards.computeIfAbsent(player, FastBoard::new);
-
+        playerFastBoards.put(player, new FastBoard(player));
         playerBoards.put(player, this);
-        updaterTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> update(player, board), delay, period));
-        animationTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> updateAnimation(player, board), animation.getDelay(), animation.getPeriod()));
-    }
 
-    private void updateAnimation(Player player, FastBoard fastBoard) {
-        if (animation != null) {
-            fastBoard.updateTitle(animation.getCurrentDisplay(player));
-            animation.getNextDisplay(player);
+        if (delay >= 0 && period >= 0) {
+            updaterTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> update(player), delay, period));
+            animationTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> titleAnimationNext(player), animation.getDelay(), animation.getPeriod()));
         }
     }
 
-    private void update(Player player, FastBoard fastBoard) {
+    @Override
+    public void titleAnimationNext(Player player) {
+        if (player == null) {
+            return;
+        }
+
         if (!player.isOnline()) {
+            return;
+        }
+
+        FastBoard fastBoard = playerFastBoards.get(player);
+
+        if (fastBoard == null) {
+            return;
+        }
+
+        if (animation != null) {
+            fastBoard.updateTitle(animation.getCurrentDisplay(player));
+            animation.nextDisplay(player);
+        }
+    }
+
+    @Override
+    public void update(Player player) {
+        if (player == null) {
+            return;
+        }
+
+        if (!player.isOnline()) {
+            return;
+        }
+
+        FastBoard fastBoard = playerFastBoards.get(player);
+
+        if (fastBoard == null) {
             return;
         }
 
