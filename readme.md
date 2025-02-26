@@ -23,7 +23,7 @@ Add the following repository to your `pom.xml`:
 
 <repository>
     <id>javaplugg</id>
-    <url>https://repo.javaplugg.net</url>
+    <url>https://repo.javaplugg.net/releases/</url>
 </repository>
 ```
 
@@ -45,7 +45,7 @@ Add the following repository to your `build.gradle`:
 ```groovy
 repositories {
     maven {
-        url 'https://repo.javaplugg.net'
+        url 'https://repo.javaplugg.net/releases/'
     }
 }
 ```
@@ -64,7 +64,7 @@ Add the following repository to your `build.gradle.kts`:
 
 ```kotlin
 repositories {
-    maven("https://repo.javaplugg.net")
+    maven("https://repo.javaplugg.net/releases/")
 }
 ```
 
