@@ -1,13 +1,12 @@
-package net.laffeymyth.fastboard.pretty.animation;
+package net.laffeymyth.fastboard.pretty;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 /**
  * Represents an animation for a scoreboard display.
  * This interface provides methods to manage the animation's display and timing.
  */
-public interface BoardDisplayAnimation {
+public interface BoardDisplayAnimation<T> {
 
     /**
      * Gets the current display for the specified player.
@@ -15,7 +14,7 @@ public interface BoardDisplayAnimation {
      * @param player the player to get the display for
      * @return the current display for the player
      */
-    Component getCurrentDisplay(Player player);
+    T getCurrentDisplay(Player player);
 
     /**
      * Advances to the next display for the specified player.

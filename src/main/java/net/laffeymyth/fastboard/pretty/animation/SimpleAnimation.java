@@ -1,7 +1,6 @@
 package net.laffeymyth.fastboard.pretty.animation;
 
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ import java.util.List;
  * This class extends BaseAnimation and adds delay and period properties.
  */
 @Getter
-public class SimpleAnimation extends BaseAnimation {
+public class SimpleAnimation<T> extends BaseAnimation<T> {
     private final long delay;
     private final long period;
 
@@ -21,7 +20,7 @@ public class SimpleAnimation extends BaseAnimation {
      * @param period   the period between updates
      * @param displays the list of displays for the animation
      */
-    public SimpleAnimation(long delay, long period, List<Component> displays) {
+    public SimpleAnimation(long delay, long period, List<T> displays) {
         super(displays);
         this.period = period;
         this.delay = delay;

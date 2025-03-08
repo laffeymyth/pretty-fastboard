@@ -9,10 +9,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.Map;
 import java.util.Optional;
 
-class BoardListener implements Listener {
-    private final Map<Player, BoardImpl> playerBoards;
+class BoardListener<T> implements Listener {
+    private final Map<Player, BoardImpl<T>> playerBoards;
 
-    public BoardListener(Map<Player, BoardImpl> playerBoards) {
+    public BoardListener(Map<Player, BoardImpl<T>> playerBoards) {
         this.playerBoards = playerBoards;
     }
 

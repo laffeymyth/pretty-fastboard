@@ -6,12 +6,12 @@ package net.laffeymyth.fastboard.pretty;
  * the board's content.
  */
 @FunctionalInterface
-public interface BoardUpdater {
+public interface BoardUpdater<T> {
 
     /**
      * Called when the board needs to be updated.
      *
      * @param board the board to update
      */
-    void onUpdate(Board board);
+    void onUpdate(Board<T> board);
 }

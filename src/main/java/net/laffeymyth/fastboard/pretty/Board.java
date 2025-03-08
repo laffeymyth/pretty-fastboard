@@ -1,7 +1,5 @@
 package net.laffeymyth.fastboard.pretty;
 
-import net.kyori.adventure.text.Component;
-import net.laffeymyth.fastboard.pretty.animation.BoardDisplayAnimation;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -10,28 +8,28 @@ import java.util.Map;
  * Represents a scoreboard that can be displayed to players.
  * This interface provides methods to manage the board's content and animation.
  */
-public interface Board {
+public interface Board<T> {
 
     /**
      * Gets the title of the board.
      *
      * @return the title of the board
      */
-    Component getTitle();
+    T getTitle();
 
     /**
      * Sets the title of the board.
      *
      * @param title the new title of the board
      */
-    void setTitle(Component title);
+    void setTitle(T title);
 
     /**
      * Gets the map of lines for the board.
      *
      * @return the map of lines for the board
      */
-    Map<Integer, Component> getLineMap();
+    Map<Integer, T> getLineMap();
 
     /**
      * Gets the updater for the board.
@@ -45,21 +43,21 @@ public interface Board {
      *
      * @return the animation for the board
      */
-    BoardDisplayAnimation getAnimation();
+    BoardDisplayAnimation<T> getAnimation();
 
     /**
      * Sets the animation for the board.
      *
      * @param animation the new animation for the board
      */
-    void setAnimation(BoardDisplayAnimation animation);
+    void setAnimation(BoardDisplayAnimation<T> animation);
 
     /**
      * Sets the updater for the board.
      *
      * @param updater the new updater for the board
      */
-    void setUpdater(BoardUpdater updater);
+    void setUpdater(BoardUpdater<T> updater);
 
     /**
      * Sends the board to the specified player.

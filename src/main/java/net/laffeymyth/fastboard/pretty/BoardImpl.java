@@ -1,10 +1,8 @@
 package net.laffeymyth.fastboard.pretty;
 
-import fr.mrmicky.fastboard.adventure.FastBoard;
+import fr.mrmicky.fastboard.FastBoardBase;
 import lombok.Getter;
 import lombok.Setter;
-import net.kyori.adventure.text.Component;
-import net.laffeymyth.fastboard.pretty.animation.BoardDisplayAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -18,22 +16,24 @@ import java.util.TreeMap;
 
 @Getter
 @Setter
-class BoardImpl implements Board {
+class BoardImpl<T> implements Board<T> {
     private static final BukkitScheduler SCHEDULER = Bukkit.getScheduler();
-    private final Map<Integer, Component> lineMap = new TreeMap<>(Comparator.reverseOrder());
-    private final Map<Player, BoardImpl> playerBoards;
-    private final Map<Player, FastBoard> playerFastBoards;
-    private final Map<Player, BoardDisplayAnimation> playerAnimation;
+    private final Class<T> boardClass;
+    private final Map<Integer, T> lineMap = new TreeMap<>(Comparator.reverseOrder());
+    private final Map<Player, BoardImpl<T>> playerBoards;
+    private final Map<Player, FastBoardBase<T>> playerFastBoards;
+    private final Map<Player, BoardDisplayAnimation<T>> playerAnimation;
     private final Map<Player, BukkitTask> updaterTaskMap;
     private final Map<Player, BukkitTask> animationTaskMap;
     private final Plugin plugin;
     private final long delay;
     private final long period;
-    private BoardUpdater updater;
-    private BoardDisplayAnimation animation;
-    private Component title;
+    private BoardUpdater<T> updater;
+    private BoardDisplayAnimation<T> animation;
+    private T title;
 
-    public BoardImpl(Map<Player, BoardImpl> playerBoards, Map<Player, FastBoard> playerFastBoards, Map<Player, BoardDisplayAnimation> playerAnimation, Map<Player, BukkitTask> updaterTaskMap, Map<Player, BukkitTask> animationTaskMap, Plugin plugin, long delay, long period, BoardUpdater updater, BoardDisplayAnimation animation) {
+    public BoardImpl(Class<T> boardClass, Map<Player, BoardImpl<T>> playerBoards, Map<Player, FastBoardBase<T>> playerFastBoards, Map<Player, BoardDisplayAnimation<T>> playerAnimation, Map<Player, BukkitTask> updaterTaskMap, Map<Player, BukkitTask> animationTaskMap, Plugin plugin, long delay, long period, BoardUpdater<T> updater, BoardDisplayAnimation<T> animation) {
+        this.boardClass = boardClass;
         this.playerBoards = playerBoards;
         this.playerFastBoards = playerFastBoards;
         this.playerAnimation = playerAnimation;
@@ -46,7 +46,8 @@ class BoardImpl implements Board {
         this.animation = animation;
     }
 
-    public BoardImpl(Map<Player, BoardImpl> playerBoards, Map<Player, FastBoard> playerFastBoards, Map<Player, BoardDisplayAnimation> playerAnimation, Map<Player, BukkitTask> updaterTaskMap, Map<Player, BukkitTask> animationTaskMap, Plugin plugin, BoardUpdater updater, BoardDisplayAnimation animation) {
+    public BoardImpl(Class<T> boardClass, Map<Player, BoardImpl<T>> playerBoards, Map<Player, FastBoardBase<T>> playerFastBoards, Map<Player, BoardDisplayAnimation<T>> playerAnimation, Map<Player, BukkitTask> updaterTaskMap, Map<Player, BukkitTask> animationTaskMap, Plugin plugin, BoardUpdater<T> updater, BoardDisplayAnimation<T> animation) {
+        this.boardClass = boardClass;
         this.playerBoards = playerBoards;
         this.playerFastBoards = playerFastBoards;
         this.playerAnimation = playerAnimation;
@@ -70,7 +71,7 @@ class BoardImpl implements Board {
                 .ifPresent(BukkitTask::cancel);
 
         Optional.ofNullable(playerFastBoards.remove(player))
-                .ifPresent(FastBoard::delete);
+                .ifPresent(FastBoardBase::delete);
 
         playerAnimation.remove(player);
         playerBoards.remove(player);
@@ -88,7 +89,7 @@ class BoardImpl implements Board {
 
         remove(player);
 
-        playerFastBoards.put(player, new FastBoard(player));
+        playerFastBoards.put(player, BoardFactory.createFastBoardBase(player, boardClass));
         playerBoards.put(player, this);
 
         if (delay >= 0 && period >= 0) {
@@ -112,7 +113,7 @@ class BoardImpl implements Board {
             return;
         }
 
-        FastBoard fastBoard = playerFastBoards.get(player);
+        FastBoardBase<T> fastBoard = playerFastBoards.get(player);
 
         if (fastBoard == null) {
             return;
@@ -134,7 +135,7 @@ class BoardImpl implements Board {
             return;
         }
 
-        FastBoard fastBoard = playerFastBoards.get(player);
+        FastBoardBase<T> fastBoard = playerFastBoards.get(player);
 
         if (fastBoard == null) {
             return;

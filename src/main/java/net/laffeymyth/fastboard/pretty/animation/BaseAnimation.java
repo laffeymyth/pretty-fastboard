@@ -1,6 +1,6 @@
 package net.laffeymyth.fastboard.pretty.animation;
 
-import net.kyori.adventure.text.Component;
+import net.laffeymyth.fastboard.pretty.BoardDisplayAnimation;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -11,8 +11,8 @@ import java.util.Map;
  * An abstract base class for scoreboard animations.
  * This class manages the display of a list of components and tracks the current display for each player.
  */
-public abstract class BaseAnimation implements BoardDisplayAnimation {
-    private final List<Component> displays;
+public abstract class BaseAnimation<T> implements BoardDisplayAnimation<T> {
+    private final List<T> displays;
     private final Map<Player, Integer> currentDisplayMap = new HashMap<>();
 
     /**
@@ -20,7 +20,7 @@ public abstract class BaseAnimation implements BoardDisplayAnimation {
      *
      * @param displays the list of displays for the animation
      */
-    public BaseAnimation(List<Component> displays) {
+    public BaseAnimation(List<T> displays) {
         this.displays = displays;
     }
 
@@ -31,7 +31,7 @@ public abstract class BaseAnimation implements BoardDisplayAnimation {
      * @return the current display for the player
      */
     @Override
-    public Component getCurrentDisplay(Player player) {
+    public T getCurrentDisplay(Player player) {
         return displays.get(currentDisplayMap.getOrDefault(player, 0));
     }
 

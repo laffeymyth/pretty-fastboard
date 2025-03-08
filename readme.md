@@ -34,7 +34,7 @@ Then, add the dependency:
 <dependency>
     <groupId>net.laffeymyth</groupId>
     <artifactId>pretty-fastboard</artifactId>
-    <version>1.3.2-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -91,7 +91,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Testboard extends JavaPlugin {
-    private BoardService boardService;
+    private net.laffeymyth.fastboard.pretty.BoardService boardService;
 
     @Override
     public void onEnable() {
@@ -118,9 +118,8 @@ package net.laffeymyth.testboard.board;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.laffeymyth.fastboard.pretty.Board;
 import net.laffeymyth.fastboard.pretty.BoardService;
-import net.laffeymyth.fastboard.pretty.animation.SimpleAnimation;
+net.laffeymyth.fastboard.pretty.component.animation.SimpleAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
@@ -150,7 +149,7 @@ public class BoardListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        Board board = boardService.createBoard(board1 -> {
+        net.laffeymyth.fastboard.pretty.Board board = boardService.createBoard(board1 -> {
             Map<Integer, Component> lines = board1.getLineMap();
             lines.put(8, Component.text("Online players: ", NamedTextColor.WHITE).append(Component.text(Bukkit.getOnlinePlayers().size(), NamedTextColor.YELLOW)));
             lines.put(7, null);

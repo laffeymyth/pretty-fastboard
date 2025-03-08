@@ -1,13 +1,13 @@
 package net.laffeymyth.fastboard.pretty;
 
-import net.laffeymyth.fastboard.pretty.animation.BoardDisplayAnimation;
+import net.kyori.adventure.text.Component;
 import org.bukkit.plugin.Plugin;
 
 /**
  * A service interface for managing scoreboards.
  * This interface provides methods to create, register, and unregister scoreboards.
  */
-public interface BoardService {
+public interface BoardService<T> {
 
     /**
      * Creates a new scoreboard with the specified updater, delay, and period.
@@ -17,7 +17,7 @@ public interface BoardService {
      * @param period  the period between updates
      * @return the created board
      */
-    Board createBoard(BoardUpdater updater, long delay, long period);
+    Board<T> createBoard(BoardUpdater<T> updater, long delay, long period);
 
     /**
      * Creates a new scoreboard with the specified updater, delay, period, and animation.
@@ -28,7 +28,7 @@ public interface BoardService {
      * @param animation the animation for the board
      * @return the created board
      */
-    Board createBoard(BoardUpdater updater, long delay, long period, BoardDisplayAnimation animation);
+    Board<T> createBoard(BoardUpdater<T> updater, long delay, long period, BoardDisplayAnimation<T> animation);
 
     /**
      * Creates a new scoreboard with the specified updater.
@@ -36,7 +36,7 @@ public interface BoardService {
      * @param updater the updater for the board
      * @return the created board
      */
-    Board createBoard(BoardUpdater updater);
+    Board<T> createBoard(BoardUpdater<T> updater);
 
     /**
      * Creates a new scoreboard with the specified updater and animation.
@@ -45,7 +45,7 @@ public interface BoardService {
      * @param animation the animation for the board
      * @return the created board
      */
-    Board createBoard(BoardUpdater updater, BoardDisplayAnimation animation);
+    Board<T> createBoard(BoardUpdater<T> updater, BoardDisplayAnimation<T> animation);
 
     /**
      * Registers the board service.
@@ -63,7 +63,17 @@ public interface BoardService {
      * @param plugin the plugin that owns the board service
      * @return a new instance of the BoardService implementation
      */
-    static BoardService create(Plugin plugin) {
-        return new BoardServiceImpl(plugin);
+    static BoardService<Component> createComponentService(Plugin plugin) {
+        return new BoardServiceImpl<>(Component.class, plugin);
+    }
+
+    /**
+     * Creates a new instance of the BoardService implementation.
+     *
+     * @param plugin the plugin that owns the board service
+     * @return a new instance of the BoardService implementation
+     */
+    static BoardService<String> createService(Plugin plugin) {
+        return new BoardServiceImpl<>(String.class, plugin);
     }
 }
