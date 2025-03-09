@@ -9,10 +9,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 
 @Getter
 @Setter
@@ -23,16 +20,14 @@ class BoardImpl<T> implements Board<T> {
     private final Map<Player, BoardImpl<T>> playerBoards;
     private final Map<Player, FastBoardBase<T>> playerFastBoards;
     private final Map<Player, BoardDisplayAnimation<T>> playerAnimation;
-    private final Map<Player, BukkitTask> updaterTaskMap;
+    private final Map<Player, List<BukkitTask>> updaterTaskMap;
     private final Map<Player, BukkitTask> animationTaskMap;
     private final Plugin plugin;
-    private final long delay;
-    private final long period;
-    private BoardUpdater<T> updater;
+    private List<BoardUpdater<T>> updaters;
     private BoardDisplayAnimation<T> animation;
     private T title;
 
-    public BoardImpl(Class<T> boardClass, Map<Player, BoardImpl<T>> playerBoards, Map<Player, FastBoardBase<T>> playerFastBoards, Map<Player, BoardDisplayAnimation<T>> playerAnimation, Map<Player, BukkitTask> updaterTaskMap, Map<Player, BukkitTask> animationTaskMap, Plugin plugin, long delay, long period, BoardUpdater<T> updater, BoardDisplayAnimation<T> animation) {
+    public BoardImpl(Class<T> boardClass, Map<Player, BoardImpl<T>> playerBoards, Map<Player, FastBoardBase<T>> playerFastBoards, Map<Player, BoardDisplayAnimation<T>> playerAnimation, Map<Player, List<BukkitTask>> updaterTaskMap, Map<Player, BukkitTask> animationTaskMap, Plugin plugin, List<BoardUpdater<T>> updaters, BoardDisplayAnimation<T> animation) {
         this.boardClass = boardClass;
         this.playerBoards = playerBoards;
         this.playerFastBoards = playerFastBoards;
@@ -40,31 +35,18 @@ class BoardImpl<T> implements Board<T> {
         this.updaterTaskMap = updaterTaskMap;
         this.animationTaskMap = animationTaskMap;
         this.plugin = plugin;
-        this.delay = delay;
-        this.period = period;
-        this.updater = updater;
-        this.animation = animation;
-    }
-
-    public BoardImpl(Class<T> boardClass, Map<Player, BoardImpl<T>> playerBoards, Map<Player, FastBoardBase<T>> playerFastBoards, Map<Player, BoardDisplayAnimation<T>> playerAnimation, Map<Player, BukkitTask> updaterTaskMap, Map<Player, BukkitTask> animationTaskMap, Plugin plugin, BoardUpdater<T> updater, BoardDisplayAnimation<T> animation) {
-        this.boardClass = boardClass;
-        this.playerBoards = playerBoards;
-        this.playerFastBoards = playerFastBoards;
-        this.playerAnimation = playerAnimation;
-        this.updaterTaskMap = updaterTaskMap;
-        this.animationTaskMap = animationTaskMap;
-        this.plugin = plugin;
-        this.delay = -1L;
-        this.period = -1L;
-        this.updater = updater;
+        this.updaters = updaters;
         this.animation = animation;
     }
 
     @Override
     public void remove(Player player) {
         Optional.ofNullable(updaterTaskMap.remove(player))
-                .filter(task -> !task.isCancelled())
-                .ifPresent(BukkitTask::cancel);
+                .ifPresent(tasks -> tasks.forEach(task -> {
+                    if (!task.isCancelled()) {
+                        task.cancel();
+                    }
+                }));
 
         Optional.ofNullable(animationTaskMap.remove(player))
                 .filter(task -> !task.isCancelled())
@@ -83,7 +65,7 @@ class BoardImpl<T> implements Board<T> {
             return;
         }
 
-        if (updater == null) {
+        if (updaters == null || updaters.isEmpty()) {
             return;
         }
 
@@ -92,9 +74,13 @@ class BoardImpl<T> implements Board<T> {
         playerFastBoards.put(player, BoardFactory.createFastBoardBase(player, boardClass));
         playerBoards.put(player, this);
 
-        if (delay >= 0 && period >= 0) {
-            updaterTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> update(player), delay, period));
+        List<BukkitTask> tasks = new ArrayList<>();
+        for (BoardUpdater<T> updater : updaters) {
+            if (updater.getDelay() >= 0 && updater.getPeriod() >= 0) {
+                tasks.add(SCHEDULER.runTaskTimer(plugin, () -> update(player), updater.getDelay(), updater.getPeriod()));
+            }
         }
+        updaterTaskMap.put(player, tasks);
 
         if (animation != null) {
             if (animation.getDelay() >= 0 && animation.getPeriod() >= 0) {
@@ -141,7 +127,9 @@ class BoardImpl<T> implements Board<T> {
             return;
         }
 
-        updater.onUpdate(this);
+        for (BoardUpdater<T> updater : updaters) {
+            updater.onUpdate(this);
+        }
 
         if (animation == null) {
             if (getTitle() != null) {

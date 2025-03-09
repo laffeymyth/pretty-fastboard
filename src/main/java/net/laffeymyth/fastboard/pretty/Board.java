@@ -2,6 +2,7 @@ package net.laffeymyth.fastboard.pretty;
 
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,11 +33,11 @@ public interface Board<T> {
     Map<Integer, T> getLineMap();
 
     /**
-     * Gets the updater for the board.
+     * Gets the updaters for the board.
      *
-     * @return the updater for the board
+     * @return the updaters for the board
      */
-    BoardUpdater getUpdater();
+    List<BoardUpdater<T>> getUpdaters();
 
     /**
      * Gets the animation for the board.
@@ -53,11 +54,11 @@ public interface Board<T> {
     void setAnimation(BoardDisplayAnimation<T> animation);
 
     /**
-     * Sets the updater for the board.
+     * Sets the updaters for the board.
      *
-     * @param updater the new updater for the board
+     * @param updaters the new updaters for the board
      */
-    void setUpdater(BoardUpdater<T> updater);
+    void setUpdaters(List<BoardUpdater<T>> updaters);
 
     /**
      * Sends the board to the specified player.

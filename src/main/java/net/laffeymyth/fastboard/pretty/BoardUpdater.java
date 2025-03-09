@@ -5,7 +5,6 @@ package net.laffeymyth.fastboard.pretty;
  * Implementations of this interface will define the logic for updating
  * the board's content.
  */
-@FunctionalInterface
 public interface BoardUpdater<T> {
 
     /**
@@ -14,4 +13,18 @@ public interface BoardUpdater<T> {
      * @param board the board to update
      */
     void onUpdate(Board<T> board);
+
+    /**
+     * Gets the period of the animation.
+     *
+     * @return the period of the animation
+     */
+    long getPeriod();
+
+    /**
+     * Gets the delay of the animation.
+     *
+     * @return the delay of the animation
+     */
+    long getDelay();
 }

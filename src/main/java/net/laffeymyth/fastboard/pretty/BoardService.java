@@ -3,6 +3,8 @@ package net.laffeymyth.fastboard.pretty;
 import net.kyori.adventure.text.Component;
 import org.bukkit.plugin.Plugin;
 
+import java.util.List;
+
 /**
  * A service interface for managing scoreboards.
  * This interface provides methods to create, register, and unregister scoreboards.
@@ -10,25 +12,21 @@ import org.bukkit.plugin.Plugin;
 public interface BoardService<T> {
 
     /**
-     * Creates a new scoreboard with the specified updater, delay, and period.
+     * Creates a new scoreboard with the specified updater.
      *
-     * @param updater the updater for the board
-     * @param delay   the initial delay before the first update
-     * @param period  the period between updates
+     * @param updaters the updaters for the board
      * @return the created board
      */
-    Board<T> createBoard(BoardUpdater<T> updater, long delay, long period);
+    Board<T> createBoard(List<BoardUpdater<T>> updaters);
 
     /**
-     * Creates a new scoreboard with the specified updater, delay, period, and animation.
+     * Creates a new scoreboard with the specified updater and animation.
      *
-     * @param updater   the updater for the board
-     * @param delay     the initial delay before the first update
-     * @param period    the period between updates
+     * @param updaters  the updater fors the board
      * @param animation the animation for the board
      * @return the created board
      */
-    Board<T> createBoard(BoardUpdater<T> updater, long delay, long period, BoardDisplayAnimation<T> animation);
+    Board<T> createBoard(List<BoardUpdater<T>> updaters, BoardDisplayAnimation<T> animation);
 
     /**
      * Creates a new scoreboard with the specified updater.
@@ -41,7 +39,7 @@ public interface BoardService<T> {
     /**
      * Creates a new scoreboard with the specified updater and animation.
      *
-     * @param updater   the updater for the board
+     * @param updater   the updater fors the board
      * @param animation the animation for the board
      * @return the created board
      */
