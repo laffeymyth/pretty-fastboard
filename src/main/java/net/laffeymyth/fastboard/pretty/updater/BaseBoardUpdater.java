@@ -10,5 +10,4 @@ import net.laffeymyth.fastboard.pretty.BoardUpdater;
 @AllArgsConstructor
 public abstract class BaseBoardUpdater<T> implements BoardUpdater<T> {
     private final long period;
-    private final long delay;
 }

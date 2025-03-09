@@ -76,15 +76,15 @@ class BoardImpl<T> implements Board<T> {
 
         List<BukkitTask> tasks = new ArrayList<>();
         for (BoardUpdater<T> updater : updaters) {
-            if (updater.getDelay() >= 0 && updater.getPeriod() >= 0) {
-                tasks.add(SCHEDULER.runTaskTimer(plugin, () -> update(player), updater.getDelay(), updater.getPeriod()));
+            if (updater.getPeriod() >= 0) {
+                tasks.add(SCHEDULER.runTaskTimer(plugin, () -> update(player), 0L, updater.getPeriod()));
             }
         }
         updaterTaskMap.put(player, tasks);
 
         if (animation != null) {
-            if (animation.getDelay() >= 0 && animation.getPeriod() >= 0) {
-                animationTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> titleAnimationNext(player), animation.getDelay(), animation.getPeriod()));
+            if (animation.getPeriod() >= 0) {
+                animationTaskMap.computeIfAbsent(player, player1 -> SCHEDULER.runTaskTimer(plugin, () -> titleAnimationNext(player), 0L, animation.getPeriod()));
             }
         }
     }

@@ -20,11 +20,4 @@ public interface BoardUpdater<T> {
      * @return the period of the animation
      */
     long getPeriod();
-
-    /**
-     * Gets the delay of the animation.
-     *
-     * @return the delay of the animation
-     */
-    long getDelay();
 }

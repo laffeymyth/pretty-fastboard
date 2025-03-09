@@ -10,19 +10,16 @@ import java.util.List;
  */
 @Getter
 public class SimpleAnimation<T> extends BaseAnimation<T> {
-    private final long delay;
     private final long period;
 
     /**
      * Constructs a new SimpleAnimation with the specified delay, period, and list of displays.
      *
-     * @param delay    the initial delay before the first update
      * @param period   the period between updates
      * @param displays the list of displays for the animation
      */
-    public SimpleAnimation(long delay, long period, List<T> displays) {
+    public SimpleAnimation(long period, List<T> displays) {
         super(displays);
         this.period = period;
-        this.delay = delay;
     }
 }
