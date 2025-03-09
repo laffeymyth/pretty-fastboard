@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Represents a scoreboard that can be displayed to players.
@@ -38,6 +39,14 @@ public interface Board<T> {
      * @return the updaters for the board
      */
     List<BoardUpdater<T>> getUpdaters();
+
+    void setLine(int index, T line);
+
+    void setLineEmpty(int index);
+
+    void removeLine(int index, T line);
+
+    void addUpdater(long period, Consumer<Board<T>> action);
 
     /**
      * Gets the animation for the board.

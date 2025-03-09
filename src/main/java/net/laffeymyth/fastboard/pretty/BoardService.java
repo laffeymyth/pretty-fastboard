@@ -12,6 +12,14 @@ import java.util.List;
 public interface BoardService<T> {
 
     /**
+     * Creates a new scoreboard with animation.
+     *
+     * @param animation the animation for the board
+     * @return the created board
+     */
+    Board<T> createBoard(BoardDisplayAnimation<T> animation);
+
+    /**
      * Creates a new scoreboard with the specified updater.
      *
      * @param updaters the updaters for the board

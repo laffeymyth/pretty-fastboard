@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 @Getter
 @Setter
@@ -43,6 +44,31 @@ class BoardImpl<T> implements Board<T> {
 
         playerAnimation.remove(player);
         playerBoards.remove(player);
+    }
+
+    @Override
+    public void setLine(int index, T line) {
+        lineMap.put(index, line);
+    }
+
+    @Override
+    public void setLineEmpty(int index) {
+        lineMap.put(index, null);
+    }
+
+    @Override
+    public void removeLine(int index, T line) {
+        lineMap.put(index, line);
+    }
+
+    @Override
+    public void addUpdater(long period, Consumer<Board<T>> action) {
+        updaters.add(new BaseBoardUpdater<T>(period) {
+            @Override
+            public void onUpdate(Board<T> board) {
+                action.accept(board);
+            }
+        });
     }
 
     @Override

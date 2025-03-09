@@ -6,9 +6,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 class BoardServiceImpl<T> implements BoardService<T> {
     private final Class<T> boardClass;
@@ -22,6 +24,11 @@ class BoardServiceImpl<T> implements BoardService<T> {
     public BoardServiceImpl(Class<T> boardClass, Plugin plugin) {
         this.boardClass = boardClass;
         this.plugin = plugin;
+    }
+
+    @Override
+    public Board<T> createBoard(BoardDisplayAnimation<T> animation) {
+        return createBoard(new ArrayList<>(), animation);
     }
 
     @Override
