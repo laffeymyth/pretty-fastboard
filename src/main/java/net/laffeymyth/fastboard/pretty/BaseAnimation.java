@@ -1,6 +1,5 @@
-package net.laffeymyth.fastboard.pretty.animation;
+package net.laffeymyth.fastboard.pretty;
 
-import net.laffeymyth.fastboard.pretty.BoardDisplayAnimation;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

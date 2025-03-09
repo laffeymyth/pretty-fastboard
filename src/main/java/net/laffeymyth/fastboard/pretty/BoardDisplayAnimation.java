@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
  * Represents an animation for a scoreboard display.
  * This interface provides methods to manage the animation's display and timing.
  */
-public interface BoardDisplayAnimation<T> {
+public interface BoardDisplayAnimation<T> extends Periodic {
 
     /**
      * Gets the current display for the specified player.
@@ -22,11 +22,4 @@ public interface BoardDisplayAnimation<T> {
      * @param player the player to advance the display for
      */
     void nextDisplay(Player player);
-
-    /**
-     * Gets the period of the animation.
-     *
-     * @return the period of the animation
-     */
-    long getPeriod();
 }

@@ -86,5 +86,5 @@ public interface Board<T> {
      *
      * @param player the player to update the board for
      */
-    void update(Player player);
+    void update(BoardUpdater<T> updater, Player player);
 }

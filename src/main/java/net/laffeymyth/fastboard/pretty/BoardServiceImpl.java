@@ -14,10 +14,9 @@ class BoardServiceImpl<T> implements BoardService<T> {
     private final Class<T> boardClass;
     private final Map<Player, BoardImpl<T>> playerBoards = new HashMap<>();
     private final Map<Player, FastBoardBase<T>> playerFastBoards = new HashMap<>();
-    private final Map<Player, List<BukkitTask>> updaterTaskMap = new HashMap<>();
-    private final Map<Player, BukkitTask> animationTaskMap = new HashMap<>();
     private final Map<Player, BoardDisplayAnimation<T>> playerAnimation = new HashMap<>();
     private final Plugin plugin;
+    private BoardUpdaterManager<T> boardUpdaterManager;
     private Listener listener;
 
     public BoardServiceImpl(Class<T> boardClass, Plugin plugin) {
@@ -27,12 +26,12 @@ class BoardServiceImpl<T> implements BoardService<T> {
 
     @Override
     public Board<T> createBoard(List<BoardUpdater<T>> boardUpdaters) {
-        return new BoardImpl<>(boardClass, playerBoards, playerFastBoards, playerAnimation, updaterTaskMap, animationTaskMap, plugin, boardUpdaters, null);
+        return new BoardImpl<>(boardClass, playerBoards, playerFastBoards, playerAnimation, boardUpdaterManager, plugin, boardUpdaters, null);
     }
 
     @Override
     public Board<T> createBoard(List<BoardUpdater<T>> boardUpdaters, BoardDisplayAnimation<T> animation) {
-        return new BoardImpl<>(boardClass, playerBoards, playerFastBoards, playerAnimation, updaterTaskMap, animationTaskMap, plugin, boardUpdaters, animation);
+        return new BoardImpl<>(boardClass, playerBoards, playerFastBoards, playerAnimation, boardUpdaterManager, plugin, boardUpdaters, animation);
     }
 
     @Override
@@ -52,28 +51,15 @@ class BoardServiceImpl<T> implements BoardService<T> {
     }
 
     public void register() {
+        boardUpdaterManager = new BoardUpdaterManager<>(plugin, playerBoards);
+        boardUpdaterManager.startUpdateTask();
+
         listener = new BoardListener<>(playerBoards);
         Bukkit.getPluginManager().registerEvents(listener, plugin);
     }
 
     public void unregister() {
-        updaterTaskMap.values().forEach(bukkitTasks -> {
-            if (bukkitTasks == null) {
-                return;
-            }
-
-            bukkitTasks.forEach(bukkitTask -> {
-                if (!bukkitTask.isCancelled()) {
-                    bukkitTask.cancel();
-                }
-            });
-        });
-
-        animationTaskMap.values().forEach(bukkitTask -> {
-            if (!bukkitTask.isCancelled()) {
-                bukkitTask.cancel();
-            }
-        });
+        boardUpdaterManager.stopUpdateTask();
 
         playerFastBoards.values().forEach(componentBaseBoard -> {
             if (!componentBaseBoard.isDeleted()) {
@@ -83,8 +69,6 @@ class BoardServiceImpl<T> implements BoardService<T> {
 
         playerFastBoards.clear();
         playerBoards.clear();
-        updaterTaskMap.clear();
-        animationTaskMap.clear();
         playerAnimation.clear();
         HandlerList.unregisterAll(listener);
     }

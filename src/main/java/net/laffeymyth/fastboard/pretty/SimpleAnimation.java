@@ -1,4 +1,4 @@
-package net.laffeymyth.fastboard.pretty.animation;
+package net.laffeymyth.fastboard.pretty;
 
 import lombok.Getter;
 
