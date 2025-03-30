@@ -69,8 +69,8 @@ public interface BoardService<T> {
      * @param plugin the plugin that owns the board service
      * @return a new instance of the BoardService implementation
      */
-    static BoardService<Component> createComponentService(Plugin plugin) {
-        return new BoardServiceImpl<>(Component.class, plugin);
+    static BoardService<Component> createComponentService(Plugin plugin, boolean async) {
+        return new BoardServiceImpl<>(Component.class, plugin, async);
     }
 
     /**
@@ -79,7 +79,7 @@ public interface BoardService<T> {
      * @param plugin the plugin that owns the board service
      * @return a new instance of the BoardService implementation
      */
-    static BoardService<String> createService(Plugin plugin) {
-        return new BoardServiceImpl<>(String.class, plugin);
+    static BoardService<String> createService(Plugin plugin, boolean async) {
+        return new BoardServiceImpl<>(String.class, plugin, async);
     }
 }

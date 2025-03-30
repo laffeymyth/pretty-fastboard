@@ -16,11 +16,13 @@ class BoardUpdaterManager<T> {
     private final Map<Player, Map<BoardDisplayAnimation<T>, Long>> animationPeriods = new HashMap<>();
     private final Map<Player, BoardImpl<T>> playerBoards;
     private final Plugin plugin;
+    private final boolean async;
     private BukkitTask updateTask;
 
-    public BoardUpdaterManager(Plugin plugin, Map<Player, BoardImpl<T>> playerBoards) {
+    public BoardUpdaterManager(Plugin plugin, Map<Player, BoardImpl<T>> playerBoards, boolean async) {
         this.plugin = plugin;
         this.playerBoards = playerBoards;
+        this.async = async;
     }
 
     public void addUpdaters(Player player, List<BoardUpdater<T>> updaters) {
@@ -43,7 +45,11 @@ class BoardUpdaterManager<T> {
 
     public void startUpdateTask() {
         if (updateTask == null) {
-            updateTask = scheduler.runTaskTimer(plugin, this::updateBoards, 0L, 1L);
+            if (async) {
+                updateTask = scheduler.runTaskTimerAsynchronously(plugin, this::updateBoards, 0L, 1L);
+            } else {
+                updateTask = scheduler.runTaskTimer(plugin, this::updateBoards, 0L, 1L);
+            }
         }
     }
 

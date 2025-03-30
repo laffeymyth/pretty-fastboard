@@ -18,12 +18,14 @@ class BoardServiceImpl<T> implements BoardService<T> {
     private final Map<Player, FastBoardBase<T>> playerFastBoards = new HashMap<>();
     private final Map<Player, BoardDisplayAnimation<T>> playerAnimation = new HashMap<>();
     private final Plugin plugin;
+    private final boolean async;
     private BoardUpdaterManager<T> boardUpdaterManager;
     private Listener listener;
 
-    public BoardServiceImpl(Class<T> boardClass, Plugin plugin) {
+    public BoardServiceImpl(Class<T> boardClass, Plugin plugin, boolean async) {
         this.boardClass = boardClass;
         this.plugin = plugin;
+        this.async = async;
     }
 
     @Override
@@ -58,7 +60,7 @@ class BoardServiceImpl<T> implements BoardService<T> {
     }
 
     public void register() {
-        boardUpdaterManager = new BoardUpdaterManager<>(plugin, playerBoards);
+        boardUpdaterManager = new BoardUpdaterManager<>(plugin, playerBoards, async);
         boardUpdaterManager.startUpdateTask();
 
         listener = new BoardListener<>(playerBoards);
