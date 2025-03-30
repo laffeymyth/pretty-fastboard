@@ -25,12 +25,12 @@ class BoardUpdaterManager<T> {
 
     public void addUpdaters(Player player, List<BoardUpdater<T>> updaters) {
         Map<BoardUpdater<T>, Long> periods = boardUpdaterPeriods.computeIfAbsent(player, k -> new HashMap<>());
-        updaters.forEach(updater -> periods.put(updater, updater.getPeriod()));
+        updaters.forEach(updater -> periods.put(updater, 0L));
     }
 
     public void addAnimation(Player player, BoardDisplayAnimation<T> animation) {
         Map<BoardDisplayAnimation<T>, Long> periods = animationPeriods.computeIfAbsent(player, k -> new HashMap<>());
-        periods.put(animation, animation.getPeriod());
+        periods.put(animation, 0L);
     }
 
     public void removeAnimation(Player player) {
@@ -74,10 +74,10 @@ class BoardUpdaterManager<T> {
             U periodic = periodEntry.getKey();
             long currentPeriod = periodEntry.getValue();
 
+            periods.put(periodic, currentPeriod++);
+
             if (currentPeriod >= periodic.getPeriod()) {
                 executeTaskAndResetPeriod(periods, periodic, board, player, task);
-            } else {
-                incrementPeriod(periods, periodic, currentPeriod);
             }
         }
     }
@@ -85,10 +85,6 @@ class BoardUpdaterManager<T> {
     private <U extends Periodic> void executeTaskAndResetPeriod(Map<U, Long> periods, U periodic, BoardImpl<T> board, Player player, PeriodicTask<U, T> task) {
         task.execute(periodic, board, player);
         periods.put(periodic, 0L);
-    }
-
-    private <U extends Periodic> void incrementPeriod(Map<U, Long> periods, U periodic, long currentPeriod) {
-        periods.put(periodic, currentPeriod + 1L);
     }
 
     @FunctionalInterface
