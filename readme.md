@@ -34,7 +34,7 @@ Then, add the dependency:
 <dependency>
     <groupId>net.laffeymyth</groupId>
     <artifactId>pretty-fastboard</artifactId>
-    <version>1.4.13-SNAPSHOT</version>
+    <version>1.4.14-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -54,7 +54,7 @@ Then, add the dependency:
 
 ```groovy
 dependencies {
-    implementation 'net.laffeymyth:pretty-fastboard:1.4.13-SNAPSHOT'
+    implementation 'net.laffeymyth:pretty-fastboard:1.4.14-SNAPSHOT'
 }
 ```
 
@@ -72,7 +72,7 @@ Then, add the dependency:
 
 ```kotlin
 dependencies {
-    implementation("net.laffeymyth:pretty-fastboard:1.4.13-SNAPSHOT")
+    implementation("net.laffeymyth:pretty-fastboard:1.4.14-SNAPSHOT")
 }
 ```
 
