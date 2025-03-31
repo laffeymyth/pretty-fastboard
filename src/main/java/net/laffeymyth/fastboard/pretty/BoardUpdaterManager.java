@@ -27,12 +27,12 @@ class BoardUpdaterManager<T> {
 
     public void addUpdaters(Player player, List<BoardUpdater<T>> updaters) {
         Map<BoardUpdater<T>, Long> periods = boardUpdaterPeriods.computeIfAbsent(player, k -> new HashMap<>());
-        updaters.forEach(updater -> periods.put(updater, 0L));
+        updaters.forEach(updater -> periods.put(updater, updater.getPeriod()));
     }
 
     public void addAnimation(Player player, BoardDisplayAnimation<T> animation) {
         Map<BoardDisplayAnimation<T>, Long> periods = animationPeriods.computeIfAbsent(player, k -> new HashMap<>());
-        periods.put(animation, 0L);
+        periods.put(animation, animation.getPeriod());
     }
 
     public void removeAnimation(Player player) {
@@ -78,9 +78,9 @@ class BoardUpdaterManager<T> {
     private <U extends Periodic> void updatePeriodsForPlayer(Map<U, Long> periods, BoardImpl<T> board, Player player, PeriodicTask<U, T> task) {
         for (Map.Entry<U, Long> periodEntry : periods.entrySet()) {
             U periodic = periodEntry.getKey();
-            long currentPeriod = periodEntry.getValue();
+            long currentPeriod = periodEntry.getValue() + 1;
 
-            periods.put(periodic, currentPeriod++);
+            periods.put(periodic, currentPeriod);
 
             if (currentPeriod >= periodic.getPeriod()) {
                 executeTaskAndResetPeriod(periods, periodic, board, player, task);
